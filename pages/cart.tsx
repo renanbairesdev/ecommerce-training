@@ -1,9 +1,9 @@
 import React, { useContext } from "react";
+import NextLink from "next/link";
 import Layout from "../components/Layout";
 import { CartContext } from "../context/CartContext";
-import NextLink from "next/link";
 import Image from "next/image";
-import dynamic from "next/dynamic";
+
 import {
   Grid,
   TableContainer,
@@ -18,11 +18,14 @@ import {
   Card,
   List,
   ListItem,
+  Select,
+  MenuItem,
 } from "@material-ui/core";
 import { ICartProduct } from "../types/cartProduct.d";
 
-function CartPage() {
-  const { cartProducts, removeFromCart } = useContext(CartContext);
+export default function CartPage() {
+  const { cartProducts, removeFromCart, updateQuantity } =
+    useContext(CartContext);
 
   return (
     <Layout>
@@ -70,7 +73,21 @@ function CartPage() {
                           </NextLink>
                         </TableCell>
                         <TableCell align="right">
-                          <Typography>{item.quantity}</Typography>
+                          <Select
+                            value={item.quantity}
+                            onChange={(e) =>
+                              updateQuantity(
+                                item,
+                                parseInt(e.target.value as string)
+                              )
+                            }
+                          >
+                            {[...new Array(20)].map((_, i) => (
+                              <MenuItem key={i + 1} value={i + 1}>
+                                {i + 1}
+                              </MenuItem>
+                            ))}
+                          </Select>
                         </TableCell>
                         <TableCell align="right">${item.price}</TableCell>
                         <TableCell align="right">
@@ -98,14 +115,16 @@ function CartPage() {
                       : $
                       {cartProducts.reduce(
                         (a, c) => a + c.quantity * parseFloat(c.price),
-                        0.0
+                        0
                       )}
                     </Typography>
                   </ListItem>
                   <ListItem>
-                    <Button variant="contained" color="primary" fullWidth>
-                      Check Out
-                    </Button>
+                    <NextLink href="/checkout" passHref>
+                      <Button variant="contained" color="primary" fullWidth>
+                        Check Out
+                      </Button>
+                    </NextLink>
                   </ListItem>
                 </List>
               </Card>
@@ -116,5 +135,3 @@ function CartPage() {
     </Layout>
   );
 }
-
-export default dynamic(() => Promise.resolve(CartPage), { ssr: false });

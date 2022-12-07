@@ -1,4 +1,3 @@
-import Cookies from "js-cookie";
 import React, { createContext } from "react";
 import Swal from "sweetalert2";
 import { ICartProduct } from "../types/cartProduct.d";
@@ -8,13 +7,9 @@ type CartContextType = {
   cartProducts: ICartProduct[];
   addToCart: (product: IProduct) => void;
   removeFromCart: (product: IProduct) => void;
+  updateQuantity: (product: IProduct, newQuantity: number) => void;
 };
 
-const initialState: { cartProducts: ICartProduct[] } = {
-  cartProducts: Cookies.get("cartProducts")
-    ? JSON.parse(Cookies.get("cartProducts") || "[]")
-    : [],
-};
 export const CartContext = createContext({} as CartContextType);
 
 export function CartProvider(props: { children: React.ReactNode }) {
@@ -46,7 +41,19 @@ export function CartProvider(props: { children: React.ReactNode }) {
     setCartProducts(cartProducts.filter((item) => item.id !== product.id));
   };
 
-  const value = { cartProducts, addToCart, removeFromCart };
+  const updateQuantity = (product: IProduct, newQuantity: number) => {
+    const newCartProducts = cartProducts.map((item) =>
+      item.id === product.id ? { ...item, quantity: newQuantity } : item
+    );
+    setCartProducts(newCartProducts);
+  };
+
+  const value = {
+    cartProducts,
+    addToCart,
+    removeFromCart,
+    updateQuantity,
+  };
 
   return (
     <CartContext.Provider value={value}>{props.children}</CartContext.Provider>
