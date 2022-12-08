@@ -11,7 +11,7 @@ import {
 import { useContext } from "react";
 import Layout from "../components/Layout";
 import { CartContext } from "../context/CartContext";
-import data from "../data";
+import data from "../dev-data";
 
 export default function Home() {
   const { addToCart } = useContext(CartContext);
