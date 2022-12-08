@@ -21,7 +21,7 @@ export default function Home() {
         <h1>Products</h1>
         <Grid container spacing={3}>
           {data.products.map((product) => (
-            <Grid item md={4} key={product.name}>
+            <Grid item md={4} key={product.id}>
               <Card>
                 <CardActionArea>
                   <CardMedia
