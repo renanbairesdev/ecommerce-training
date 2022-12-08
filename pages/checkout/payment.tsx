@@ -17,8 +17,8 @@ import { TPaymentMethod } from "../../types/checkout.d";
 
 export default function Payment() {
   const router = useRouter();
-  const { shippingAddress, paymentMethod, setPaymentMethod } =
-    useContext(CheckoutContext);
+  const { shippingAddress, setPaymentMethod } = useContext(CheckoutContext);
+  const [method, setMethod] = useState<TPaymentMethod>(null);
 
   useEffect(() => {
     if (!shippingAddress.address) {
@@ -28,7 +28,7 @@ export default function Payment() {
 
   const submitHandler = (e: React.SyntheticEvent) => {
     e.preventDefault();
-    if (!paymentMethod) {
+    if (!method) {
       Swal.fire({
         position: "center",
         icon: "error",
@@ -37,7 +37,8 @@ export default function Payment() {
         timer: 1500,
       });
     } else {
-      setPaymentMethod((e.target as HTMLInputElement).value as TPaymentMethod);
+      setPaymentMethod(method);
+      router.push("/checkout/placeorder");
     }
   };
   return (
@@ -52,10 +53,8 @@ export default function Payment() {
                 <RadioGroup
                   aria-label="Payment Method"
                   name="paymentMethod"
-                  value={paymentMethod}
-                  onChange={(e) =>
-                    setPaymentMethod(e.target.value as TPaymentMethod)
-                  }
+                  value={method}
+                  onChange={(e) => setMethod(e.target.value as TPaymentMethod)}
                 >
                   <FormControlLabel
                     label="PayPal"

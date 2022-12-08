@@ -26,7 +26,6 @@ export default function Shipping() {
   }, [setValue, shippingAddress]);
 
   const submitHandler = (address: IShippingAddress) => {
-    console.log(address);
     setShippingAddress(address);
     router.push("/checkout/payment");
   };
